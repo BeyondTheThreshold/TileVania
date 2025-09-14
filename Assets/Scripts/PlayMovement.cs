@@ -11,13 +11,15 @@ public class PlayMovement : MonoBehaviour
     [SerializeField] float climbSpeed = 5f;
     Animator myAnimator;
     Rigidbody2D myRigidbody;
-    CapsuleCollider2D myCapsuleCollider;
+    CapsuleCollider2D myBodyCollider;
+    BoxCollider2D myFeetCollider;
     float gravityScaleAtStart;
     void Start()
     {
         myRigidbody = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
-        myCapsuleCollider = GetComponent<CapsuleCollider2D>();
+        myBodyCollider = GetComponent<CapsuleCollider2D>();
+        myFeetCollider = GetComponent<BoxCollider2D>();
         gravityScaleAtStart = myRigidbody.gravityScale;
 
     }
@@ -37,7 +39,7 @@ public class PlayMovement : MonoBehaviour
 
     void OnJump(InputValue value)
     {
-        if (!myCapsuleCollider.IsTouchingLayers(LayerMask.GetMask("Ground"))){return;}
+        if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ground"))){return;}
         if (value.isPressed)
             {
                 myRigidbody.linearVelocity += new Vector2(0f, jumpSpeed);
@@ -46,7 +48,7 @@ public class PlayMovement : MonoBehaviour
 
     void ClimbLadder()
     {
-        if (!myCapsuleCollider.IsTouchingLayers(LayerMask.GetMask("Climb")))
+        if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Climb")))
         //사다리 tilemap을 "climb"라는 layer로 조정하고 trigger로 해두면 된다. 
         {
             myRigidbody.gravityScale = gravityScaleAtStart;
