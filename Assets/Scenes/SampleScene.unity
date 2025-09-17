@@ -14033,6 +14033,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 756957264306273649, guid: 3a4358df24ccfdf4b9ed4dbffcde546f, type: 3}
+      propertyPath: m_DefaultControlScheme
+      value: Keyboard&Mouse
+      objectReference: {fileID: 0}
+    - target: {fileID: 756957264306273649, guid: 3a4358df24ccfdf4b9ed4dbffcde546f, type: 3}
+      propertyPath: m_NeverAutoSwitchControlSchemes
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2835527512703850152, guid: 3a4358df24ccfdf4b9ed4dbffcde546f, type: 3}
       propertyPath: m_Size.x
       value: 0.55649805

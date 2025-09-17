@@ -9,11 +9,13 @@ public class PlayMovement : MonoBehaviour
     [SerializeField] float runSpeed = 10f;
     [SerializeField] float jumpSpeed = 5f;
     [SerializeField] float climbSpeed = 5f;
+    [SerializeField] Vector2 deathKick = new Vector2(10f, 10f); 
     Animator myAnimator;
     Rigidbody2D myRigidbody;
     CapsuleCollider2D myBodyCollider;
     BoxCollider2D myFeetCollider;
     float gravityScaleAtStart;
+    bool isAlive = true;
     void Start()
     {
         myRigidbody = GetComponent<Rigidbody2D>();
@@ -26,24 +28,28 @@ public class PlayMovement : MonoBehaviour
 
     void Update()
     {
+        if (!isAlive) { return; }
         Run();
         FlipSprite();
         ClimbLadder();
+        Die();
     }
 
     void OnMove(InputValue value)
     {
+        if (!isAlive) { return; }
         moveInput = value.Get<Vector2>();
         Debug.Log(moveInput);
     }
 
     void OnJump(InputValue value)
     {
-        if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ground"))){return;}
+        if (!isAlive) { return; }
+        if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ground"))) { return; }
         if (value.isPressed)
-            {
-                myRigidbody.linearVelocity += new Vector2(0f, jumpSpeed);
-            }
+        {
+            myRigidbody.linearVelocity += new Vector2(0f, jumpSpeed);
+        }
     }
 
     void ClimbLadder()
@@ -60,7 +66,7 @@ public class PlayMovement : MonoBehaviour
         myRigidbody.linearVelocity = climbVelocity;
         myRigidbody.gravityScale = 0f;
         //사다리를 타고있을 때로 인식되면 중력을 0으로해서 흘러내리지 않도록 방지 위의 코드는 원래대로 하는 코드임
-         bool playerHasVertical= Mathf.Abs(myRigidbody.linearVelocity.y) > Mathf.Epsilon;
+        bool playerHasVertical = Mathf.Abs(myRigidbody.linearVelocity.y) > Mathf.Epsilon;
         myAnimator.SetBool("isLadder", playerHasVertical);
     }
 
@@ -78,6 +84,16 @@ public class PlayMovement : MonoBehaviour
         if (playerHasHorizontal)
         {
             transform.localScale = new Vector2(Mathf.Sign(myRigidbody.linearVelocity.x), 1f);
-        }   
+        }
+    }
+
+    void Die()
+    {
+        if (myBodyCollider.IsTouchingLayers(LayerMask.GetMask("Enemy")))
+        {
+            isAlive = false;
+            myAnimator.SetTrigger("Dying");
+            myRigidbody.linearVelocity = deathKick;
+        }
     }
 }
